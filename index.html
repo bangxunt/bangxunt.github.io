@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bangxun Tang</title>
+<meta name="description" content="Bangxun Tang: video generation research (中文 / English).">
+<style>
+/* Same layout as the English homepage; explanatory text exists in Chinese and English, switched by a toggle. Titles, venue tags and video labels stay in English. */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --ink:#14171c; --muted:#5b6270; --line:#e0e3e9;
+  --accent:#3245cf; --accent-soft:#e7eafb; --ok:#1d7a4b; --ok-soft:#e3f3ea; --rev:#8f5b00; --rev-soft:#fbf0dc;
+  --display:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --sans:"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --mono:ui-monospace,Consolas,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1115; --surface:#171a20; --ink:#e7e9ee; --muted:#9aa1ad; --line:#2a2f38;
+  --accent:#9aa8ff; --accent-soft:#1f2443; --ok:#6fd09d; --ok-soft:#14291f; --rev:#e8b85c; --rev-soft:#2c2414; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a20; --ink:#e7e9ee; --muted:#9aa1ad; --line:#2a2f38;
+  --accent:#9aa8ff; --accent-soft:#1f2443; --ok:#6fd09d; --ok-soft:#14291f; --rev:#e8b85c; --rev-soft:#2c2414; color-scheme:dark}
+html[data-lang="zh"] .en, html[data-lang="en"] .zh{display:none!important}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);margin:0}
+html[data-lang="zh"] body{line-height:1.75}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:56px 72px}
+header{display:grid;gap:14px;padding-bottom:30px;border-bottom:1px solid var(--line)}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+h1{font:700 clamp(38px,6vw,58px)/1.02 var(--display);letter-spacing:-.02em;margin:0}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.toggle button{font:500 13px var(--mono);border:0;background:transparent;color:var(--muted);padding:6px 14px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.intro{margin:0;font-size:17px}
+ul.bio{margin:0;padding-left:20px;display:grid;gap:4px;max-width:78ch;font-size:16px}
+ul.bio b{font:500 13px var(--mono);color:var(--muted);font-weight:500}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font:500 14px var(--mono)}
+h2{font:700 13px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:48px 0 4px}
+.paper{padding-block:26px 30px;border-bottom:1px solid var(--line)}
+.paper:last-of-type{border-bottom:0}
+.media{min-width:0}
+.media video,.media img{display:block;width:100%;max-width:100%;border-radius:10px;background:var(--line)}
+.side{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}
+.side .body{display:grid;gap:14px}
+.meta,.desc{display:grid;gap:8px;align-content:start;min-width:0}
+.venue{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font:500 12px var(--mono);border-radius:4px;padding:2px 8px}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.rev{background:var(--rev-soft);color:var(--rev)}
+.tag.plain{background:var(--accent-soft);color:var(--accent)}
+h3{font:700 22px/1.25 var(--display);margin:0;text-wrap:balance}
+.authors{font-size:14px;color:var(--muted);margin:0}
+.authors b{color:var(--ink);font-weight:600}
+.with{font-size:14px;margin:0}
+.plinks{display:flex;flex-wrap:wrap;gap:4px 16px;font:500 14px var(--mono)}
+.plinks .off{color:var(--muted)}
+.tldr{margin:0}
+dl.points{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:7px 14px;margin:2px 0 0;font-size:15px}
+dl.points dt{font:500 11.5px/2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+dl.points dd{margin:0}
+.slate{font:400 12.5px var(--sans);color:var(--muted);margin:8px 0 0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.crop{position:relative;aspect-ratio:1963/1536;overflow:hidden;border-radius:10px;background:#000}
+.media .crop video{position:absolute;left:0;top:0;height:100%;width:auto;max-width:none;border-radius:0}
+.quad{position:relative;aspect-ratio:3840/2112;border-radius:10px;overflow:hidden;background:#000}
+.quad video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0}
+.quad span{position:absolute;font:600 12.5px/1.3 var(--sans);color:#fff;background:rgba(0,0,0,.62);padding:3px 8px;border-radius:4px;pointer-events:none;max-width:44%}
+.quad .tl{left:10px;top:10px}.quad .tr{left:calc(50% + 10px);top:10px}.quad .bl{left:10px;top:calc(50% + 10px)}.quad .br{left:calc(50% + 10px);top:calc(50% + 10px);background:#2f49d0}
+footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+@media (max-width:760px){
+  .wrap{padding-inline:16px;padding-block:36px 56px}
+  .side{grid-template-columns:1fr}
+  .quad span{font-size:10px;padding:2px 5px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="top">
+    <h1>Bangxun Tang</h1>
+    <div class="toggle" role="group" aria-label="Language">
+      <button type="button" data-set="zh" aria-pressed="true">中文</button>
+      <button type="button" data-set="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+  <p class="intro zh">我做视频生成方向的研究。</p>
+  <p class="intro en">I work on video generation.</p>
+  <ul class="bio zh">
+    <li><b>NeurIPS 2026 · 一作</b>：替换电影片段中的演员，并生成长视频</li>
+    <li><b>ECCV 2026 · 共同一作</b>：替换视频背景，背景随镜头运动，演员重新打光</li>
+    <li><b>ACM MM 2026 · 共同一作</b>：让生成图像里的小字和 logo 保持清晰</li>
+    <li><b>ICLR 2027 在投 · 独立作者</b>：为配音视频生成本人的嘴型和牙齿</li>
+    <li><b>arXiv 预印本 · 独立作者</b>：无需标签校正可穿戴传感器的佩戴偏移</li>
+  </ul>
+  <ul class="bio en">
+    <li><b>NeurIPS 2026 · first author</b>: replacing actors in film scenes, with long-video generation</li>
+    <li><b>ECCV 2026 · co-first author</b>: replacing video backgrounds with camera-aware motion and relighting</li>
+    <li><b>ACM MM 2026 · co-first author</b>: keeping small text and logos readable in generated images</li>
+    <li><b>Under review at ICLR 2027 · sole author</b>: person-specific lips and teeth for dubbed video</li>
+    <li><b>arXiv preprint · sole author</b>: label-free correction of wearable sensor placement shifts</li>
+  </ul>
+  <div class="links"><a href="https://arxiv.org/search/?searchtype=author&amp;query=Tang%2C+Bangxun">arXiv</a></div>
+</header>
+
+<h2>Accepted</h2>
+
+<article class="paper side">
+  <div class="media">
+    <div class="quad"><video src="assets/pai_actor/videos/00066.mp4#t=0.1" muted loop playsinline preload="metadata" data-auto aria-label="PAI-Actor example: two actors in a film scene replaced by two new actors."></video>
+      <span class="tl">New actors</span><span class="tr">Original clip</span><span class="bl">Input: actors removed, pose kept</span><span class="br">Output</span></div>
+    <div class="row2">
+      <div class="quad"><video src="assets/pai_actor/videos/00011.mp4#t=0.1" muted loop playsinline preload="metadata" data-auto aria-label="PAI-Actor example 2."></video></div>
+      <div class="quad"><video src="assets/pai_actor/videos/00094.mp4#t=0.1" muted loop playsinline preload="metadata" data-auto aria-label="PAI-Actor example 3."></video></div>
+    </div>
+    <p class="slate zh">每段视频布局相同，右下角为生成结果。</p>
+    <p class="slate en">Same layout in every clip; the generated video is bottom right.</p>
+  </div>
+  <div class="body">
+    <div class="meta">
+      <div class="venue"><span class="tag ok">NeurIPS 2026</span><span class="tag plain">first author</span></div>
+      <h3>PAI-Actor: Cinematic Multi-Character Replacement in Dynamic Scenes</h3>
+      <p class="authors"><b>Bangxun Tang</b>*, Heyuan Gao*, Yiren Song*, Guian Fang, Zijian He, Jie Yang, Mike Zheng Shou</p>
+      <p class="with"><span class="zh">合作：</span><span class="en">With </span><a href="https://sites.google.com/view/showlab">Show Lab, NUS</a><span class="zh">、</span><span class="en"> and </span><a href="https://www.utopaistudios.com/">Utopai Studios</a></p>
+      <div class="plinks"><a href="https://arxiv.org/abs/2609.05918">arXiv</a><span class="off">code coming soon</span></div>
+    </div>
+    <div class="desc">
+      <p class="tldr zh">替换真实电影片段中的多位演员，每位演员只需一张参考照片，同时保留原片的表演、背景、镜头运动和光照。</p>
+      <p class="tldr en">Replaces several actors in a real film clip, one reference photo per actor, while keeping the original performance, background, camera motion and lighting.</p>
+      <dl class="points">
+        <dt>Data</dt><dd><span class="zh">PAI-Actor Dataset：从电影素材中构建的约 3 万个片段。</span><span class="en">PAI-Actor Dataset: about 30K clips built from film footage.</span></dd>
+        <dt>Teacher</dt><dd><span class="zh">双向扩散 Transformer，用于高质量 1080p 生成（片段约 4 秒）。</span><span class="en">A bidirectional diffusion transformer for high-quality 1080p generation (clips of about 4 s).</span></dd>
+        <dt>Student</dt><dd><span class="zh">把教师模型蒸馏成自回归模型（块因果注意力、KV 缓存、self-forcing），可生成 17 秒的 1080p 视频。</span><span class="en">The teacher distilled into an autoregressive model (block-causal attention, KV cache, self-forcing) that generates 17 s of 1080p video.</span></dd>
+        <dt>Results</dt><dd><span class="zh">在九种方法中误差（MSE、LPIPS）最低；16 人用户评测中，每一项的得票率都最高。</span><span class="en">Lowest error (MSE, LPIPS) among nine methods; largest vote share in every category of a 16-person user study.</span></dd>
+      </dl>
+    </div>
+  </div>
+</article>
+
+<article class="paper side">
+  <div class="media">
+    <div class="crop"><video src="assets/pai_studio/videos/teaser.mp4#t=0.1" muted loop playsinline preload="metadata" data-auto aria-label="PAI-Studio examples: reference image, green-screen input video and output video for four scenes."></video></div>
+  </div>
+  <div class="body">
+    <div class="meta">
+      <div class="venue"><span class="tag ok">ECCV 2026</span><span class="tag plain">co-first author</span></div>
+      <h3>PAI-Studio: Cinematic Video Background Replacement with Camera-Aware Motion</h3>
+      <p class="authors">Heyuan Gao*, <b>Bangxun Tang</b>*, Yiren Song*, Guian Fang, Zijian He, Jie Yang, Mike Zheng Shou</p>
+      <p class="with"><span class="zh">合作：</span><span class="en">With </span><a href="https://sites.google.com/view/showlab">Show Lab, NUS</a><span class="zh">、</span><span class="en"> and </span><a href="https://www.utopaistudios.com/">Utopai Studios</a></p>
+      <div class="plinks"><a href="https://arxiv.org/abs/2606.01399">arXiv</a><a href="https://showlab.github.io/PAI-Studio/">project page</a><a href="https://github.com/showlab/PAI-Studio">code</a></div>
+    </div>
+    <div class="desc">
+      <p class="tldr zh">根据一到三张参考照片，把在绿幕前拍摄的演员放进新场景：背景随镜头运动，演员的光照也随新场景调整。</p>
+      <p class="tldr en">Places an actor filmed on a green screen into a new scene from one to three reference photos: the background moves with the camera, and the actor is relit to match.</p>
+      <dl class="points">
+        <dt>Data</dt><dd><span class="zh">CineStudio：来自电影和网络视频的 3 万个片段。</span><span class="en">CineStudio: 30K clips from films and online videos.</span></dd>
+        <dt>Model</dt><dd><span class="zh">上下文扩散 Transformer。复制时间位置编码，把每张参考照片固定到指定的输出帧；用光照扰动训练，让模型学会给演员重新打光。</span><span class="en">An in-context diffusion transformer. Cloned temporal positional encodings pin each reference photo to a chosen output frame; illumination-perturbation training teaches the model to relight the actor.</span></dd>
+        <dt>Results</dt><dd><span class="zh">所有指标都优于 VACE 和四个商业系统（Kling O1、Kling 3.0 Omni、Runway Aleph、SwitchX）；25 位评测者的两两对比中，相对 Kling O1 的胜率为 56.3%–63.6%。</span><span class="en">Best on every metric against VACE and four commercial systems (Kling O1, Kling 3.0 Omni, Runway Aleph, SwitchX); preferred over Kling O1 in 56.3–63.6% of comparisons by 25 raters.</span></dd>
+      </dl>
+    </div>
+  </div>
+</article>
+
+<article class="paper side">
+  <div class="media">
+    <img src="assets/fineforge/fineforge_vs_flux_kontext_219.jpg" alt="Chocolate package. Left, FLUX Kontext turns the label text into gibberish; right, FineForge keeps every line readable." loading="lazy">
+  </div>
+  <div class="body">
+    <div class="meta">
+      <div class="venue"><span class="tag ok">ACM MM 2026</span><span class="tag plain">co-first author</span></div>
+      <h3>FineForge: Dual-Driven Reinforcement Learning for Fine-Grained Detail Generation in Diffusion Models</h3>
+      <p class="authors">Heyuan Gao*, <b>Bangxun Tang</b>*, Zeyu Gao</p>
+      <div class="plinks"><span class="off">paper coming soon</span></div>
+    </div>
+    <div class="desc">
+      <p class="tldr zh">把商品放进新场景的图像生成模型，常把包装上的小字和 logo 画乱。FineForge 用 GRPO 和边缘感知奖励对 FLUX.1 Kontext 做后训练，OCR 准确率从 0.440 提高到 0.589。</p>
+      <p class="tldr en">Image generators that place a product into a new scene often garble its small text and logos. FineForge post-trains FLUX.1 Kontext with GRPO and an edge-aware reward, raising OCR accuracy from 0.440 to 0.589.</p>
+    </div>
+  </div>
+</article>
+
+<h2>Preprints</h2>
+
+<article class="paper side">
+  <div class="media">
+    <video src="assets/rgor/videos/03.mp4#t=0.1" muted loop playsinline preload="metadata" data-auto aria-label="RGOR example: masked input, RGOR output and ground truth, with the reference frames and mouth patches used."></video>
+    <p class="slate zh">上排：输入 · 我们的结果 · 真实画面。下排：同一个人的参考帧和高清嘴部图。</p>
+    <p class="slate en">Top: input · ours · ground truth. Below: reference frames and HD mouth patches of the same person.</p>
+  </div>
+  <div class="body">
+    <div class="meta">
+      <div class="venue"><span class="tag rev">Under review</span><span class="tag plain">sole author</span></div>
+      <h3>Beyond Lip Sync: Reference-Grounded Oral Refinement for Audio-Driven Portrait Animation</h3>
+      <p class="authors"><b>Bangxun Tang</b></p>
+      <div class="plinks"><a href="https://arxiv.org/abs/2609.38019">arXiv</a></div>
+    </div>
+    <div class="desc">
+      <p class="tldr zh">现有的口型同步模型能保住整张脸，却只会画一张"平均"的嘴。RGOR 能画出这个人自己的嘴唇和牙齿。</p>
+      <p class="tldr en">Lip-sync models keep the face recognizable but draw a generic mouth. RGOR renders each person's own lips and teeth.</p>
+      <dl class="points">
+        <dt>Data</dt><dd><span class="zh">NeRSemble 按人划分：290 人（2,900 段句子）用于训练，50 个没见过的人用于测试。</span><span class="en">NeRSemble split by person: 290 identities (2,900 sentence clips) for training, 50 unseen identities for testing.</span></dd>
+        <dt>Model</dt><dd><span class="zh">基于 LatentSync-1.6。每一帧都参考同一个人其他录像里的 16 帧，以及 4 张绕过 VAE 的高清嘴部图。</span><span class="en">Built on LatentSync-1.6. Each frame is conditioned on 16 frames of the same person from other recordings and on 4 HD mouth patches that bypass the VAE.</span></dd>
+        <dt>Training</dt><dd><span class="zh">成对判别器把生成的嘴和本人的参考图放在一起比较；反例里有别人的真实嘴型，所以"逼真但不是本人"的嘴会被惩罚。</span><span class="en">A paired judge compares the generated mouth with the person's own reference; its negatives include real mouths of other people, so a realistic but wrong mouth is penalized.</span></dd>
+        <dt>Results</dt><dd><span class="zh">在 8 个开源和商业系统（包括 Kling 和 HeyGen）中，嘴部 LPIPS（0.297）和 DISTS（0.163）最好；19 人评测的四个问题都得票最多。</span><span class="en">Best mouth-region LPIPS (0.297) and DISTS (0.163) among eight open-source and commercial systems, including Kling and HeyGen; most votes on all four questions of a 19-rater study.</span></dd>
+      </dl>
+    </div>
+  </div>
+</article>
+
+<article class="paper side">
+  <div class="media">
+    <img src="assets/refit/refit_overview.png" alt="REFIT overview: train once and freeze; for each user, recognize the shift, fix it, and test the result with a label-free accuracy estimate." loading="lazy">
+  </div>
+  <div class="body">
+    <div class="meta">
+      <div class="venue"><span class="tag rev">arXiv preprint</span><span class="tag plain">sole author</span></div>
+      <h3>REFIT: Recognize, Fix, and Test Wearable Sensor Placement Shifts without Labels</h3>
+      <p class="authors"><b>Bangxun Tang</b></p>
+      <div class="plinks"><a href="https://arxiv.org/abs/2610.08991">arXiv</a></div>
+    </div>
+    <div class="desc">
+      <p class="tldr zh">可穿戴传感器换了一种方式戴回去，固定不变的动作识别模型看到的就是"同一个动作，但坐标轴变了"。REFIT 从无标签数据中识别这种变化，在模型前面把它还原，并在没有标签的情况下检验结果。</p>
+      <p class="tldr en">When a wearable sensor is put back on differently, a frozen activity model sees the same motion on changed axes. REFIT identifies the change from unlabeled data, undoes it in front of the frozen model, and checks the result without labels.</p>
+      <dl class="points">
+        <dt>Results</dt><dd><span class="zh">真实重新佩戴：准确率 0.547 → 0.955（最好的无标签基线为 0.827）。8 个数据集、116 位未参与训练的受试者：0.861，最好的基线为 0.384。</span><span class="en">Real re-attachment: accuracy 0.547 → 0.955 (best label-free baseline 0.827). Eight datasets, 116 held-out subjects: 0.861 vs 0.384 for the best baseline.</span></dd>
+      </dl>
+    </div>
+  </div>
+</article>
+
+<footer><span class="zh">* 共同一作 · 2026 年 10 月更新</span><span class="en">* equal contribution · Updated October 2026</span></footer>
+</div>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll(".toggle button");
+  function setLang(lang) {
+    root.dataset.lang = lang;
+    root.lang = lang === "zh" ? "zh-CN" : "en";
+    buttons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.set === lang)));
+    try { localStorage.setItem("bt-lang", lang); } catch (e) {}
+  }
+  let saved = null;
+  try { saved = localStorage.getItem("bt-lang"); } catch (e) {}
+  setLang(saved === "en" ? "en" : "zh");
+  buttons.forEach(b => b.addEventListener("click", () => setLang(b.dataset.set)));
+
+  const vids = document.querySelectorAll("video[data-auto]");
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    const v = e.target;
+    if (e.isIntersecting) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } else v.pause();
+  }), { threshold: 0.4 });
+  vids.forEach(v => io.observe(v));
+})();
+</script>
+
+</body>
+</html>
