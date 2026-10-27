@@ -94,14 +94,12 @@ footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);font-si
     <li><b>ECCV 2026 · 共同一作</b>：替换视频背景，背景随镜头运动，演员重新打光</li>
     <li><b>ACM MM 2026 · 共同一作</b>：让生成图像里的小字和 logo 保持清晰</li>
     <li><b>ICLR 2027 在投 · 独立作者</b>：为配音视频生成本人的嘴型和牙齿</li>
-    <li><b>arXiv 预印本 · 独立作者</b>：无需标签校正可穿戴传感器的佩戴偏移</li>
   </ul>
   <ul class="bio en">
     <li><b>NeurIPS 2026 · first author</b>: replacing actors in film scenes, with long-video generation</li>
     <li><b>ECCV 2026 · co-first author</b>: replacing video backgrounds with camera-aware motion and relighting</li>
     <li><b>ACM MM 2026 · co-first author</b>: keeping small text and logos readable in generated images</li>
     <li><b>Under review at ICLR 2027 · sole author</b>: person-specific lips and teeth for dubbed video</li>
-    <li><b>arXiv preprint · sole author</b>: label-free correction of wearable sensor placement shifts</li>
   </ul>
   <div class="links"><a href="https://arxiv.org/search/?searchtype=author&amp;query=Tang%2C+Bangxun">arXiv</a></div>
 </header>
@@ -205,27 +203,6 @@ footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);font-si
         <dt>Model</dt><dd><span class="zh">基于 LatentSync-1.6。每一帧都参考同一个人其他录像里的 16 帧，以及 4 张绕过 VAE 的高清嘴部图。</span><span class="en">Built on LatentSync-1.6. Each frame is conditioned on 16 frames of the same person from other recordings and on 4 HD mouth patches that bypass the VAE.</span></dd>
         <dt>Training</dt><dd><span class="zh">成对判别器把生成的嘴和本人的参考图放在一起比较；反例里有别人的真实嘴型，所以"逼真但不是本人"的嘴会被惩罚。</span><span class="en">A paired judge compares the generated mouth with the person's own reference; its negatives include real mouths of other people, so a realistic but wrong mouth is penalized.</span></dd>
         <dt>Results</dt><dd><span class="zh">在 8 个开源和商业系统（包括 Kling 和 HeyGen）中，嘴部 LPIPS（0.297）和 DISTS（0.163）最好；19 人评测的四个问题都得票最多。</span><span class="en">Best mouth-region LPIPS (0.297) and DISTS (0.163) among eight open-source and commercial systems, including Kling and HeyGen; most votes on all four questions of a 19-rater study.</span></dd>
-      </dl>
-    </div>
-  </div>
-</article>
-
-<article class="paper side">
-  <div class="media">
-    <img src="assets/refit/refit_overview.png" alt="REFIT overview: train once and freeze; for each user, recognize the shift, fix it, and test the result with a label-free accuracy estimate." loading="lazy">
-  </div>
-  <div class="body">
-    <div class="meta">
-      <div class="venue"><span class="tag rev">arXiv preprint</span><span class="tag plain">sole author</span></div>
-      <h3>REFIT: Recognize, Fix, and Test Wearable Sensor Placement Shifts without Labels</h3>
-      <p class="authors"><b>Bangxun Tang</b></p>
-      <div class="plinks"><a href="https://arxiv.org/abs/2610.08991">arXiv</a></div>
-    </div>
-    <div class="desc">
-      <p class="tldr zh">可穿戴传感器换了一种方式戴回去，固定不变的动作识别模型看到的就是"同一个动作，但坐标轴变了"。REFIT 从无标签数据中识别这种变化，在模型前面把它还原，并在没有标签的情况下检验结果。</p>
-      <p class="tldr en">When a wearable sensor is put back on differently, a frozen activity model sees the same motion on changed axes. REFIT identifies the change from unlabeled data, undoes it in front of the frozen model, and checks the result without labels.</p>
-      <dl class="points">
-        <dt>Results</dt><dd><span class="zh">真实重新佩戴：准确率 0.547 → 0.955（最好的无标签基线为 0.827）。8 个数据集、116 位未参与训练的受试者：0.861，最好的基线为 0.384。</span><span class="en">Real re-attachment: accuracy 0.547 → 0.955 (best label-free baseline 0.827). Eight datasets, 116 held-out subjects: 0.861 vs 0.384 for the best baseline.</span></dd>
       </dl>
     </div>
   </div>
